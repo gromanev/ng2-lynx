@@ -1,6 +1,6 @@
 {
   "name": "ng2-lynx",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
@@ -10,7 +10,7 @@
     "pree2e": "webdriver-manager update",
     "e2e": "protractor"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/common": "~2.0.0",
     "@angular/compiler": "~2.0.0",
@@ -23,7 +23,10 @@
     "core-js": "^2.4.1",
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
-    "zone.js": "^0.6.23"
+    "zone.js": "^0.6.23",
+    "ng2-cookies": "^1.0.2",
+    "typescript-dotnet-commonjs": "^4.0.0",
+    "linqts": "^1.6.0"
   },
   "devDependencies": {
     "@types/jasmine": "^2.2.30",

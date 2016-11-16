@@ -1,0 +1,85 @@
+<div [class]="options.mainClass">
+  <div class="campaigns-top-left">
+    <md-input #searchCamp
+              *ngIf="options.SearchConfig != null && options.SearchConfig.searchEnable == true"
+              (keyup.enter)="Search(searchCamp.value, options.SearchConfig.searchFields)"
+              placeholder="Поиск">
+    </md-input>
+  </div>
+  <!-- menu opens when trigger button is clicked -->
+  <div class="campaigns-top-right" *ngIf="options.DatePicker != null && options.DatePicker.enabled == true">
+    <div class="datepicker-section">
+      От:
+      <material-datepicker accentColor="#009688"
+                           (onSelect)="changeStartDate($event)">
+      </material-datepicker>
+      До:
+      <material-datepicker accentColor="#009688"
+                           (onSelect)="changeStartDate($event)">
+      </material-datepicker>
+    </div>
+  </div>
+
+  <table [class]="options.tableVisualization.tableClass">
+    <thead>
+    <tr>
+      <th *ngFor="let column of VisibleFields(data.headers)">
+        <div class="th-value" (click)="Sort(column.key)">{{column.value}}
+        </div>
+        <div
+          *ngIf="data.filter.OrderBy[0].Target === column.key"
+          [class]="data.filter.OrderBy[0].Course === 'asc' ? 'arrow-up': ' arrow-down'"></div>
+      </th>
+    </tr>
+    </thead>
+    <md-progress-circle *ngIf="isLoadingVisible == true && isFirstLoadingScreenVisible != true"
+                        mode="indeterminate"
+                        class="progress-circle">
+    </md-progress-circle>
+
+    <tbody *ngIf="data.tableData != null && isFirstLoadingScreenVisible != true" [class]="LoadingClass">
+    <template ngFor let-res="$implicit" [ngForOf]="data.tableData" let-i="index">
+      <tr>
+        <td *ngFor="let key of VisibleFields(data.headers)"
+            [innerHTML]="Piper(res, key.key)">
+        </td>
+      </tr>
+    </template>
+    </tbody>
+  </table>
+
+  <div *ngIf="isFirstLoadingScreenVisible == true || data.tableData == null" [style.height.px]="GetHeightLoadScreen()"
+       class="loading-table">
+    <md-progress-circle mode="indeterminate" *ngIf="isLoadingVisible == true || data.tableData == null"
+                        class="progress-circle"></md-progress-circle>
+  </div>
+
+  <div class="clearfix">
+    <div *ngIf="options.tablePagination.pagginationModuleVisible">
+
+      <pagination *ngIf="data.dataInformation != null"
+                  [totalItems]="data.dataInformation.totalItems"
+                  [(ngModel)]="data.dataInformation.currentPage"
+                  (pageChanged)="pageChanged($event)"
+                  [disabled]="!options.tablePagination.paginationEnabled"
+                  [itemsPerPage]="data.dataInformation.itemsPerPage"
+                  [maxSize]="options.tablePagination.maxSize"
+                  [boundaryLinks]="options.tablePagination.boundaryLinks"
+                  [previousText]="'Назад'"
+                  [nextText]="'Далее'"
+                  [firstText]="'Первая'"
+                  [lastText]="'Последняя'"
+                  [directionLinks]="options.tablePagination.directionLinks">
+      </pagination>
+
+      <select #itemCountSelect id="count-items" class="form-control"
+              (change)="ChangeCountViewItems(itemCountSelect.value)">
+        <option [selected]="+num == data.filter.PerPage"
+                *ngFor="let num of options.changeCountList.countList">
+          {{num}}
+        </option>
+      </select>
+      <label id="count-items-label" for="count-items">{{options.changeCountList.labelOfSelecter}}</label>
+    </div>
+  </div>
+</div>

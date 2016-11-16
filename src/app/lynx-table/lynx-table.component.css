@@ -1,0 +1,82 @@
+md-progress-circle {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
+  width: 50px;
+  height: 50px;
+}
+
+.blur-table {
+  filter: blur(5px);
+  animation: 3.16s animateBlur linear infinite;
+}
+
+.loading-table {
+  position: relative;
+  min-height: 100px;
+  background: #efefef;
+}
+
+pagination {
+  float: right;
+}
+
+.form-control {
+  float: right;
+  max-width: 70px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 20px;
+}
+
+#count-items-label {
+  float: right;
+  margin-right: 10px;
+  margin-top: 27px;
+}
+
+table th {
+  position: relative;
+}
+
+.th-value {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+table th .arrow-down {
+  position: absolute;
+  z-index: 100;
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border: 6px solid transparent;
+  box-sizing: border-box;
+  border-top-color: #009688;
+  vertical-align: middle;
+  margin-left: 3px;
+  margin-top: 5px;
+}
+
+table th .arrow-up {
+  position: absolute;
+  z-index: 100;
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border: 6px solid transparent;
+  box-sizing: border-box;
+  border-bottom-color: #009688;
+  vertical-align: middle;
+  margin-left: 3px;
+  margin-bottom: 9px;
+  bottom: 5px;
+}
+
+table th:last-of-type {
+  padding-right: 13px;
+}
