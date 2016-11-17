@@ -5,6 +5,7 @@ import {TableHeaderModel} from "../Models/header-model";
 import {Cookie} from "ng2-cookies";
 import {List} from "linqts/dist/linq";
 import {SearchModel} from "../Models/search-model";
+import {DataInformationModel} from "../Models/data-information-model";
 
 @Component({
   selector: 'lynx-table',
@@ -17,61 +18,47 @@ export class LynxTableComponent implements OnInit {
    * Данные для таблицы
    */
   @Input() public data?: TableDataModel = new TableDataModel();
-
   /**
    * Настройки таблицы
    */
   @Input() public options?: TableOptionsModel = new TableOptionsModel();
-
   @Output() universalPiper: EventEmitter<any> = new EventEmitter();
   @Output() dataUpdater = new EventEmitter(true);
-
   public isLoadingVisible: boolean = true;
-
   /**
    * СSS класс для загрузки кампаний
    * @type {string}
    */
   public LoadingClass: string = "normal-table";//"normal-table blur-table";
   public isFirstLoadingScreenVisible: boolean = true;
-
-  constructor(private cdRef: ChangeDetectorRef) {
+  constructor() {
     this.isFirstLoadingScreenVisible = true;
     this.LoadingClass = "normal-table"; //"normal-table blur-table";
     this.isLoadingVisible = true;
-
+    this.data.dataInformation = new DataInformationModel();
+    //console.log(this.data);
+    if(this.data.filter.OrderBy == null){
+      this.data.filter.OrderBy = [
+        {
+          Course: "asc",
+          Target: "impressions"
+        }
+      ];
+    }
     //this.ngOnInit();
   }
-
   ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
-
     for (let propName in changes) {
-
       if (propName != "data") continue;
-
       if (changes[propName].currentValue.tableData != null) {
         this.isFirstLoadingScreenVisible = false;
         this.LoadingClass = "normal-table";
         this.isLoadingVisible = false;
-
         //console.log(changes[propName]);
       }
     }
   }
-
   ngOnInit() {
-    //console.log("ngOnInit");
-    //this.data.tableData = this.data.tableData;
-
-    // инициализация объекта с информацией о таблице
-
-    this.data.dataInformation = {
-      totalItems: 5,
-      currentPage: 1,
-      itemsPerPage: 5
-    };
-
-
     // инициализация фильтра
     if (this.data.filter == null) {
       this.data.filter = {
@@ -84,17 +71,12 @@ export class LynxTableComponent implements OnInit {
     }else{
       this.data.filter.PerPage = this.GetItemsCountCookie();
     }
-
     this.Initialize();
   }
-
   private Initialize(): void {
-
     this.data.filter.Page = 1;
-
     this.DataUpdate();
   }
-
   /**
    * Получение данных
    * @constructor
@@ -102,18 +84,14 @@ export class LynxTableComponent implements OnInit {
   private DataUpdate(): any {
     this.data.tableData = null;
     this.dataUpdater.emit();
-
-
+    //console.log(this.data);
   }
-
   public Sort(target: string, course?: string): void {
     //console.log(target);
     this.data.filter.OrderBy[0].Course = this.data.filter.OrderBy[0].Course == 'asc' ? 'desc' : 'asc';
     this.data.filter.OrderBy[0].Target = target;
-
     this.Initialize();
   }
-
   /**
    * Поиск
    * @param value
@@ -121,23 +99,18 @@ export class LynxTableComponent implements OnInit {
    * @constructor
    */
   public Search(value: any, searchField: string[]): void {
-
     let searchObj = new List<SearchModel>();
-
     searchField.forEach(x => {
       searchObj.Add({
         SearchField: x,
         SearchValue: value
       });
     });
-
     this.data.filter.Search = searchObj.ToArray();
     //console.log(this.data.filter.Search);
-
     //this.searchField = [{key: searchField, value: value}];
     this.Initialize();
   }
-
   /**
    * Обработчик события при переходе по страницам
    * @param event
@@ -146,7 +119,6 @@ export class LynxTableComponent implements OnInit {
     this.data.filter.Page = event.page;
     this.DataUpdate();
   };
-
   /**
    * Назначаем кол-во выводимых кампаний на страницу
    * @param num
@@ -154,20 +126,15 @@ export class LynxTableComponent implements OnInit {
    */
   public ChangeCountViewItems(num: string): void {
     // устанавливаем в куки значение количества выводимых итемов
-
     Cookie.set('showItemsCount', num);
-
     // получаем куки и в той же функции устанавливаем значение
     // количества выводимых итемов равное установленному числу
     this.GetItemsCountCookie();
-
     // устанавливаем на первую страницу
     this.data.filter.Page = this.data.dataInformation.currentPage = 1;
-
     // вызываем повторное обновление кампаний
     this.DataUpdate();
   }
-
   /**
    * Получение кукисов со значениями для компонента с кампаниями
    * @constructor
@@ -179,12 +146,9 @@ export class LynxTableComponent implements OnInit {
     }
     return perPageCount;
   }
-
   private GetData(): void {
-
     // если элемент пустой - забиваем его тестовыми данными
     if (this.data == null) {
-
       this.data = {
         headers: [
           {
@@ -265,7 +229,6 @@ export class LynxTableComponent implements OnInit {
         }
       };
     }
-
     if (this.options == null) {
       this.options = {
         mainClass: "table-responsive",
@@ -288,12 +251,9 @@ export class LynxTableComponent implements OnInit {
           countList: [5, 10, 15, 25, 50, 100],
           labelOfSelecter: "Кол-во элементов на странице:"
         }
-
       };
     }
-
   }
-
   /**
    * Столбцы, которые стоит показывать
    * @param oldCols
@@ -304,10 +264,8 @@ export class LynxTableComponent implements OnInit {
     let resultList = new List<TableHeaderModel>(oldCols)
       .Where(x => x.visible == true)
       .ToArray();
-
     return resultList;
   }
-
   /**
    * Получение высоты блока при загрузке
    * @returns {number}
@@ -319,7 +277,6 @@ export class LynxTableComponent implements OnInit {
       ? this.data.filter.PerPage * tmp
       : 1 * tmp;
   }
-
   /**
    * Функция для "наружнего" пайпинга
    * @param value
@@ -333,5 +290,4 @@ export class LynxTableComponent implements OnInit {
     this.universalPiper.emit(tmp);
     return tmp.result;
   }
-
 }

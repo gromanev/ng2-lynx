@@ -19,7 +19,6 @@
       </material-datepicker>
     </div>
   </div>
-
   <table [class]="options.tableVisualization.tableClass">
     <thead>
     <tr>
@@ -27,7 +26,7 @@
         <div class="th-value" (click)="Sort(column.key)">{{column.value}}
         </div>
         <div
-          *ngIf="data.filter.OrderBy[0].Target === column.key"
+          *ngIf="data.filter.OrderBy != null && data.filter.OrderBy[0].Target === column.key"
           [class]="data.filter.OrderBy[0].Course === 'asc' ? 'arrow-up': ' arrow-down'"></div>
       </th>
     </tr>
@@ -36,7 +35,6 @@
                         mode="indeterminate"
                         class="progress-circle">
     </md-progress-circle>
-
     <tbody *ngIf="data.tableData != null && isFirstLoadingScreenVisible != true" [class]="LoadingClass">
     <template ngFor let-res="$implicit" [ngForOf]="data.tableData" let-i="index">
       <tr>
@@ -47,16 +45,13 @@
     </template>
     </tbody>
   </table>
-
   <div *ngIf="isFirstLoadingScreenVisible == true || data.tableData == null" [style.height.px]="GetHeightLoadScreen()"
        class="loading-table">
     <md-progress-circle mode="indeterminate" *ngIf="isLoadingVisible == true || data.tableData == null"
                         class="progress-circle"></md-progress-circle>
   </div>
-
   <div class="clearfix">
     <div *ngIf="options.tablePagination.pagginationModuleVisible">
-
       <pagination *ngIf="data.dataInformation != null"
                   [totalItems]="data.dataInformation.totalItems"
                   [(ngModel)]="data.dataInformation.currentPage"
@@ -71,7 +66,6 @@
                   [lastText]="'Последняя'"
                   [directionLinks]="options.tablePagination.directionLinks">
       </pagination>
-
       <select #itemCountSelect id="count-items" class="form-control"
               (change)="ChangeCountViewItems(itemCountSelect.value)">
         <option [selected]="+num == data.filter.PerPage"
